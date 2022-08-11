@@ -1,0 +1,312 @@
+{
+  "twitter_followers_count": [
+    {
+      "date": "2022-08-07",
+      "followers_count": 8553771,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-07",
+      "followers_count": 1431949,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-07",
+      "followers_count": 3974161,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-06",
+      "followers_count": 1431666,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-06",
+      "followers_count": 3970485,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-06",
+      "followers_count": 8549859,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-05",
+      "followers_count": 3965388,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-05",
+      "followers_count": 8545578,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-05",
+      "followers_count": 1431223,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-04",
+      "followers_count": 3959285,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-04",
+      "followers_count": 8540211,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-04",
+      "followers_count": 1430621,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-03",
+      "followers_count": 1430233,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-03",
+      "followers_count": 3954340,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-03",
+      "followers_count": 8534935,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-02",
+      "followers_count": 8533114,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-02",
+      "followers_count": 1430054,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-02",
+      "followers_count": 3952219,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-01",
+      "followers_count": 3943580,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-01",
+      "followers_count": 1429292,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-01",
+      "followers_count": 8522447,
+      "candidate": 22
+    }
+  ],
+  "twitter_likes_count": [
+    {
+      "date": "2022-08-07",
+      "likes": 18092,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-07",
+      "likes": 48821,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-07",
+      "likes": 83080,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-06",
+      "likes": 125925,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-06",
+      "likes": 7481,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-06",
+      "likes": 73634,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-05",
+      "likes": 258568,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-05",
+      "likes": 120046,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-05",
+      "likes": 32794,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-04",
+      "likes": 34187,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-04",
+      "likes": 86961,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-04",
+      "likes": 210593,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-03",
+      "likes": 81034,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-03",
+      "likes": 8698,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-03",
+      "likes": 125136,
+      "candidate": 13
+    }
+  ],
+  "retweets_count": [
+    {
+      "date": "2022-08-07",
+      "retweets": 2652,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-07",
+      "retweets": 4797,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-07",
+      "retweets": 21185,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-06",
+      "retweets": 25992,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-06",
+      "retweets": 1341,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-06",
+      "retweets": 7710,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-05",
+      "retweets": 23939,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-05",
+      "retweets": 19819,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-05",
+      "retweets": 5817,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-04",
+      "retweets": 6534,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-04",
+      "retweets": 11220,
+      "candidate": 13
+    },
+    {
+      "date": "2022-08-04",
+      "retweets": 47201,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-03",
+      "retweets": 20511,
+      "candidate": 22
+    },
+    {
+      "date": "2022-08-03",
+      "retweets": 1730,
+      "candidate": 12
+    },
+    {
+      "date": "2022-08-03",
+      "retweets": 13564,
+      "candidate": 13
+    }
+  ],
+  "candidate_hashtags": [
+    {
+      "name": "Lula",
+      "hashtags": {
+        "VamosJuntosPeloBrasil": 34,
+        "EquipeLula": 92
+      }
+    },
+    {
+      "name": "Ciro",
+      "hashtags": {
+        "CIROGAMES": 41,
+        "CentralDasEleições": 8,
+        "ViceDoCiro": 29,
+        "GiroDoCiro": 5
+      }
+    },
+    {
+      "name": "Bolsonaro",
+      "hashtags": {}
+    }
+  ],
+  "candidate_topics": [
+    {
+      "name": "Lula",
+      "topics": {
+        "escola": 1,
+        "educação": 5,
+        "ensino": 1,
+        "saúde": 18,
+        "universidade": 2,
+        "médico": 1,
+        "violência": 1
+      }
+    },
+    {
+      "name": "Ciro",
+      "topics": {
+        "saúde": 2,
+        "educação": 7
+      }
+    },
+    {
+      "name": "Bolsonaro",
+      "topics": {
+        "polícia": 1
+      }
+    }
+  ]
+}
