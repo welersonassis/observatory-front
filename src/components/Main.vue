@@ -13,7 +13,8 @@
                   class="Main_CandChip"
                   v-model="candidatesModel"
                   required
-                  :value="cand">
+                  :value="cand"
+                  @click="resolveCharts()">
                   <div v-if="cand.candidate_id > 0" class="Main_CandBox" >
                     <div class="Main_CandPhoto">
                       <img :src="getImageCand(cand)" class="Main_CandImg" alt="">
@@ -30,11 +31,13 @@
                   class="Main_CandChip"
                   v-model="socialsModel"
                   required
-                  :value="social" />
+                  :value="social"
+                  @click="resolveCharts()" />
               </template>
             </div>
           </div>
-          <div v-if="" class="Main_MidCharts">
+          <div v-if="loading" class="Main_LoadingCharts"></div>
+          <div v-else-if="candidatesModel.candidate_id === -1" class="Main_MidCharts">
             <div class="Main_ChartContainer">
               <Highcharts
                 :config="chart_twitter_followers_count"
@@ -48,6 +51,18 @@
             <div class="Main_ChartContainer">
               <Highcharts
                 :config="chart_retweets_count"
+                :counter="counter" />
+            </div>
+          </div>
+          <div v-else class="Main_MidCharts">
+            <div class="Main_ChartContainer">
+              <Highcharts
+                :config="chart_candidate_hashtags"
+                :counter="counter" />
+            </div>
+            <div class="Main_ChartContainer">
+              <Highcharts
+                :config="chart_candidate_topics"
                 :counter="counter" />
             </div>
           </div>
@@ -81,6 +96,9 @@ export default {
       chart_twitter_followers_count: {},
       chart_twitter_likes_count: {},
       chart_retweets_count: {},
+      chart_candidate_hashtags: {},
+      chart_candidate_topics: {},
+      loading: false,
       docSelected: null,
       counter: 0,
       candidatesModel: null,
@@ -106,6 +124,7 @@ export default {
   computed: {},
   methods: {
     resolveCharts() {
+      this.loading = true;
       if (this.candidatesModel.candidate_id === -1) {
         // chart geral
         this.resolve_twitter_followers_count();
@@ -116,15 +135,25 @@ export default {
         this.resolve_candidate_hashtags();
         this.resolve_candidate_topics();
       }
+
+      setTimeout(() => {
+        this.loading = false;
+      }, 0);
     },
     resolve_twitter_followers_count() {
-      this.chart_twitter_followers_count = this.prepareChartLine(this.dados.twitter_followers_count, "followers_count", "Número de seguidores Twitter")
+      this.chart_twitter_followers_count = this.prepareChartLine(this.dados.twitter_followers_count, "followers_count", "Ganho de seguidores Twitter")
     },
     resolve_twitter_likes_count() {
       this.chart_twitter_likes_count = this.prepareChartLine(this.dados.twitter_likes_count, "likes", "Número de likes Twitter")
     },
     resolve_retweets_count() {
       this.chart_retweets_count = this.prepareChartLine(this.dados.retweets_count, "retweets", "Número de retweets")
+    },
+    resolve_candidate_hashtags() {
+      this.chart_candidate_hashtags = this.prepareChartCloud(this.dados.candidate_hashtags, "hashtags", "Hashtags usadas")
+    },
+    resolve_candidate_topics() {
+      this.chart_candidate_topics = this.prepareChartCloud(this.dados.candidate_topics, "topics", "Tópicos citados")
     },
     prepareChartLine(arrDados, yItem, title) {
       let series = [];
@@ -137,7 +166,7 @@ export default {
         }
       })
       xAxisArray.sort();
-      xAxisArray = xAxisArray.map(x => (new Date(x)).toLocaleDateString("pt-br"));
+      xAxisArray = xAxisArray.map(x => (new Date(x)).toLocaleDateString("pt-br").substr(0,5));
 
       arrDados.map((x, ix) => {
         let inSeries = series.find(y => {
@@ -156,13 +185,31 @@ export default {
           inSeries.data = [];
         }
         inSeries.data.push({
-            name: x.date,
-            x: xAxisArray.findIndex(t => t === (new Date(Date.parse(x.date+"T00:00"))).toLocaleDateString("pt-br")),
+            name: "Total: " + x[yItem].toLocaleString("pt-br"),
+            x: xAxisArray.findIndex(t => t === (new Date(Date.parse(x.date+"T00:00"))).toLocaleDateString("pt-br").substr(0,5) ),
             y: x[yItem]
         })
       })
 
-      series.sort((a, b) => a.name.localeCompare(b.name))
+      series.sort((a, b) => a.name.localeCompare(b.name));
+
+
+      if (yItem === "followers_count") {
+        series.map(x => {
+            let start = 0;
+            x.data.sort((a, b) => a.y - b.y);
+            x.data.map((item, ix) => {
+              if (ix === 0) {
+                start = item.y;
+                item.y = 0;
+              } else {
+                item.y = item.y - start;
+              }
+            })
+        })
+        console.log("o", series);
+      }
+
 
       return {
         series,
@@ -172,6 +219,67 @@ export default {
         xAxis: {
           type: "category",
           categories: xAxisArray
+        }
+      }
+    },
+    prepareChartCloud(arrDados, chave, title) {
+      let series = [];
+      let vm = this;
+      let dataList = [];
+      let xAxisArray = [];
+
+      
+
+
+      let cand = arrDados.find(x => {
+        return x.name === this.candidatesModel.name
+      })
+      console.log(cand);
+      if (cand) {
+
+        Object.keys( cand[chave] ).forEach(function (key) {
+          dataList.push({
+            name: key,
+            y: cand[chave][key]
+          })
+        });
+
+        dataList.sort((a, b) => b.y - a.y)
+
+
+        series.push({
+          type: 'bar',
+          data: dataList,
+          name: 'Ocorrências'
+        })
+      }
+
+      return {
+        chart: {
+          marginLeft: 200,
+        },
+        series,
+        title: {
+          text: title
+        },
+        xAxis: {
+          type: "category",
+          categories: dataList.map(x => x.name),
+          labels: {
+              useHTML: false,//set to true
+              style:{
+                  width:'50px',
+                  whiteSpace:'normal'//set to normal
+              },
+          },
+        },
+        plotOptions: {
+          bar: {
+            colorByPoint: false
+          }
+        },
+        legend: {
+          enabled: false
         }
       }
     },

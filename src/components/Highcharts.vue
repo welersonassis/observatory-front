@@ -1,6 +1,10 @@
 <template>
   <div class="Highcharts_Layout">
-    <div :id="id" class="Highcharts_Div" />
+    <div v-if="noData" class="Highcharts_Empty">
+      <div v-if="config.title" class="Highcharts_TitleEmpty">{{ config.title.text }}</div>
+      Sem dados para exibir
+    </div>
+    <div v-else :id="id" class="Highcharts_Div" />
   </div>
 </template>
 
@@ -11,6 +15,7 @@ import Export from "highcharts/modules/export-data";
 import Dark from "highcharts/themes/dark-unica";
 import Accessibility from "highcharts/modules/accessibility";
 import drilldown from "highcharts/modules/drilldown";
+import wordcloud from "highcharts/modules/wordcloud";
 import Histogram from "highcharts/modules/histogram-bellcurve";
 let uid = 0;
 
@@ -38,6 +43,7 @@ export default {
       chart: null,
       chartSlidersDebounceFunction: null,
       returnedFunction: null,
+      noData: false
     }
   },
   watch: {
@@ -54,6 +60,7 @@ export default {
     // Export(Highcharts);
     Dark(Highcharts);
     Accessibility(Highcharts);
+    wordcloud(Highcharts);
 
     this.chartSlidersDebounceFunction = Vue.debounce(this.renderChart, 500);
 
@@ -61,12 +68,23 @@ export default {
     window.addEventListener('resize', this.returnedFunction);
   },
   mounted() {
-    this.renderChart();
+    let isEmpty = true;
+    if (this.config.series) {
+      this.config.series.map(x => {
+        if (x.data && x.data.length > 0) isEmpty = false;
+      })
+    }
+    if (!isEmpty) {
+      this.renderChart();
+    } else {
+      this.noData = true;
+    }
   },
   computed: {},
   methods: {
     renderChart() {
       var _this = this;
+      Highcharts.seriesTypes.wordcloud.prototype.placementStrategy.randomHorizontal = this.randomPlacement;
 
       let options = {
         chart: {
@@ -96,16 +114,23 @@ export default {
         credits: {
           enabled: false
         },
+        tooltip: {
+          style: {
+            fontSize: "14px"
+          }
+        },
         xAxis: {
           title: {
             enabled: false
           },
-          startOnTick: true,
-          endOnTick: true,
-          showLastLabel: true,
           tickLength: 0,
           gridLineColor: "#fff1",
           gridLineWidth: "1",
+          labels: {
+            style: {
+              fontSize: "14px"
+            }
+          }
         },
         yAxis: {
           title: {
@@ -113,41 +138,26 @@ export default {
           },
           gridLineColor: "#fff1",
           tickLength: 0,
+          labels: {
+            style: {
+              fontSize: "14px"
+            }
+          }
         },
         legend: {
-          enabled: true
+          enabled: true,
+          itemStyle: {
+            fontSize: "14px"
+          }
         },
         plotOptions: {
-          scatter: {
-            marker: {
-              radius: 5,
-              states: {
-                hover: {
-                  enabled: true,
-                  lineColor: 'rgb(100,100,100)'
-                }
-              }
-            },
-            states: {
-              hover: {
-                marker: {
-                  enabled: false
-                }
-              }
-            },
-            tooltip: {
-              headerFormat: '<b>Documento {point.key}</b><br><b>Cluster #{series.name}</b><br><br>',
-              pointFormat: '{point.x}, {point.y}'
-            },
-            stickyTracking: false,
-            events: {
-              click: function (event) {
-                _this.$emit('detail', event.point);
-              },
-            },
+          wordcloud: {
+            maxFontSize: 25,
+            minFontSize: 10,
+            placementStrategy: 'randomHorizontal',
           },
-          series: {
-            animation: false
+          bar: {
+            centerInCategory: true
           }
         },
         series: []
@@ -177,6 +187,18 @@ export default {
 
       // end of renderChart()
     },
+    randomPlacement(point, options) {
+      var field = options.field;
+      var r = options.rotation;
+      return {
+        x: this.getRandomPosition(field.width) - (field.width / 2),
+        y: this.getRandomPosition(field.height) - (field.height / 2),
+        rotation: 0
+      };
+    },
+    getRandomPosition(size) {
+      return Math.round((size * (Math.random() + 0.5)) / 2);
+    },
     handleResize() {
       if (this.chart) {
         this.chart.destroy();
@@ -195,6 +217,18 @@ export default {
 .Highcharts_Div {
   height: 100%;
   width: 100%;
+}
+.Highcharts_Empty {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 30px;
+}
+.Highcharts_TitleEmpty {
+  font-size: 20px;
+  margin-bottom: 50px;
 }
 
 
@@ -259,5 +293,8 @@ svg.highcharts-root .highcharts-tooltip tspan[style*="color:"] {
 }
 .highcharts-legend-box {
   fill: transparent !important;
+}
+.highcharts-bar-series > rect {
+  stroke: none !important;
 }
 </style>
