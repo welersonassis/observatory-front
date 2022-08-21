@@ -73,6 +73,8 @@
                 <v-date-picker v-model="endDate" @input="dateMenuEnd = false" />
               </v-menu>
 
+              <v-btn rounded color="primary" dark @click="resolveCharts()">Aplicar</v-btn>
+
             </div>
           </div>
           <div v-if="loading" class="Main_LoadingCharts"></div>
@@ -224,12 +226,11 @@ export default {
       let property = "followers_count";
       if (this.chart_followers_relative) property = "followers_relative";
       
-      axios.get(Vue.preUrl + `/report/followers_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/followers_count?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_followers_count = this.prepareChartLine(res.data, property, "Ganho de seguidores")
       })
       .catch(error => {
-        debugger;
         this.chart_followers_count = {}
         console.log(error);
       });
@@ -241,7 +242,7 @@ export default {
       let property = "likes_count";
       if (this.chart_likes_perPost) property = "likes_by_post";
 
-      axios.get(Vue.preUrl + `/report/likes_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/likes_count?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_likes_count = this.prepareChartLine(res.data, property, "Número de likes")
       })
@@ -253,11 +254,11 @@ export default {
     },
     resolve_thrid() {
 
-      let urlpos = `/report/retweets_count?start=2022-08-01&end=2022-08-22`;
+      let urlpos = `/report/retweets_count?start=${this.startDate}&end=${this.endDate}`;
       let property = "retweets";
       let title = "Número de retweets";
       if (this.socialsModel === "Instagram") {
-        urlpos = `/report/insta_comments_count?start=2022-08-01&end=2022-08-22`;
+        urlpos = `/report/insta_comments_count?start=${this.startDate}&end=${this.endDate}`;
         property = "comments_by_post";
         title = "Número de comentários";
       }
@@ -274,7 +275,7 @@ export default {
     },
     resolve_post_count() {
 
-      axios.get(Vue.preUrl + `/report/posts_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/posts_count?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_post_count = this.prepareChartLine(res.data, "posts_count", "Número de posts")
       })
@@ -286,7 +287,7 @@ export default {
     },
     resolve_ranking() {
 
-      axios.get(Vue.preUrl + `/report/candidate_ranking?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/candidate_ranking?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_ranking = this.prepareRanking(res.data[0], "Ranking")
       })
@@ -298,7 +299,7 @@ export default {
     },
     resolve_candidate_hashtags() {
 
-      axios.get(Vue.preUrl + `/report/candidate_hashtags?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/candidate_hashtags?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_candidate_hashtags = this.prepareChartCloud(res.data, "hashtags", "Hashtags usadas")
       })
@@ -310,7 +311,7 @@ export default {
     },
     resolve_candidate_topics() {
 
-      axios.get(Vue.preUrl + `/report/candidate_topics?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      axios.get(Vue.preUrl + `/report/candidate_topics?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
         this.chart_candidate_topics = this.prepareChartCloud(res.data, "topics", "Tópicos citados")
       })
@@ -643,6 +644,13 @@ body {
   font-size: 14px;
   text-align: center;
 }
+.Main_DatePicker {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 30px;
+  align-items: center;
+}
 
 
 
@@ -685,7 +693,16 @@ html::-webkit-scrollbar-corner {
 .Main_Layout .v-input--selection-controls {
   margin-top: 0px;
 }
-.v-application--is-ltr .v-text-field .v-label {
-  right: unset !important;
+.theme--dark.v-application {
+  background: unset !important;
+  color: unset !important;
+}
+.v-application .accent {
+  background-color: #006fc7 !important;
+  border-color: #0079b5 !important;
+}
+.v-application .accent--text {
+  color: #006fc7 !important;
+  caret-color: #006fc7 !important;
 }
 </style>

@@ -8,6 +8,7 @@ import PortalVue from 'portal-vue';
 
 
 import 'focus-visible';
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
@@ -27,7 +28,8 @@ if (process.env.NODE_ENV === 'production') {
 new Vue({
   store,
   router,
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')
 
 

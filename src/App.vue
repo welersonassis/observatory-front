@@ -1,25 +1,27 @@
 <template>
-  <div class="App_Layout v-application--is-ltr">
-    <router-view></router-view>
-    <div
-      :class="{
-        App_SnackActive: snackActive,
-        App_SnacKError: snackError,
-        App_SnacKCorrect: snackCorrect,
-        App_SnacKBlue: snackBlue,
-        App_RealActive: realActive,
-        App_PreActive: preActive,
-        App_AnimIn: animIntro,
-        App_AnimOut: animOut,
-        App_Shake: snackShake
-      }"
-      class="App_SnackLayout">
+  <v-app dark>
+    <div class="App_Layout">
+      <router-view></router-view>
       <div
-        class="App_Snack"
-        @click="snackActive = false">{{ snackText }}</div>
-    </div>
+        :class="{
+          App_SnackActive: snackActive,
+          App_SnacKError: snackError,
+          App_SnacKCorrect: snackCorrect,
+          App_SnacKBlue: snackBlue,
+          App_RealActive: realActive,
+          App_PreActive: preActive,
+          App_AnimIn: animIntro,
+          App_AnimOut: animOut,
+          App_Shake: snackShake
+        }"
+        class="App_SnackLayout">
+        <div
+          class="App_Snack"
+          @click="snackActive = false">{{ snackText }}</div>
+      </div>
 
-  </div>
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -67,8 +69,25 @@ export default {
     }
   },
   beforeMount() {
-    debugger;
+    // debugger;
     this.$vuetify.theme.dark = true;
+
+    axios.interceptors.request.use(
+      function(config) {
+        // Do something before request is sent
+        if (config.url.indexOf('&start=null&end=null') > -1) {
+          config.url = config.url.substr(0, config.url.indexOf('&start=null&end=null'))
+        }
+        if (config.url.indexOf('?start=null&end=null') > -1) {
+          config.url = config.url.substr(0, config.url.indexOf('?start=null&end=null'))
+        }
+        return config;
+      },
+      function(error) {
+        // Do something with request error
+        return Promise.reject(error);
+      }
+    );
   },
   mounted() {
     let vm = this;
