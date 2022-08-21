@@ -35,22 +35,88 @@
                   @click="resolveCharts()" />
               </template>
             </div>
+            <div class="Main_DatePicker">
+
+              <v-menu
+                v-model="dateMenuStart"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px">
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="startDate"
+                    label="Data início"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on" />
+                </template>
+                <v-date-picker v-model="startDate" @input="dateMenuStart = false" />
+              </v-menu>
+
+              <v-menu
+                v-model="dateMenuEnd"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px">
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="endDate"
+                    label="Data fim"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on" />
+                </template>
+                <v-date-picker v-model="endDate" @input="dateMenuEnd = false" />
+              </v-menu>
+
+            </div>
           </div>
           <div v-if="loading" class="Main_LoadingCharts"></div>
           <div v-else-if="candidatesModel.candidate_id === -1" class="Main_MidCharts">
             <div class="Main_ChartContainer">
               <Highcharts
-                :config="chart_twitter_followers_count"
+                :config="chart_followers_count"
+                :counter="counter" />
+              <div class="Main_SwitchBox">
+                <div class="Main_SwitchLabel">Percentual</div>
+                <v-switch
+                  v-model="chart_followers_relative"
+                  single-line
+                  hide-details
+                  @change="resolve_followers_count()" />
+              </div>
+            </div>
+            <div class="Main_ChartContainer">
+              <Highcharts
+                :config="chart_likes_count"
+                :counter="counter" />
+              <div class="Main_SwitchBox">
+                <div class="Main_SwitchLabel">Média por post</div>
+                <v-switch
+                  v-model="chart_likes_perPost"
+                  :disabled="socialsModel === 'Instagram'"
+                  single-line
+                  hide-details
+                  @change="resolve_likes_count()" />
+              </div>
+            </div>
+            <div class="Main_ChartContainer">
+              <Highcharts
+                :config="chart_thrid"
                 :counter="counter" />
             </div>
             <div class="Main_ChartContainer">
               <Highcharts
-                :config="chart_twitter_likes_count"
+                :config="chart_post_count"
                 :counter="counter" />
             </div>
             <div class="Main_ChartContainer">
               <Highcharts
-                :config="chart_retweets_count"
+                :config="chart_ranking"
                 :counter="counter" />
             </div>
           </div>
@@ -93,9 +159,13 @@ export default {
   data() {
     return {
       dados: dados,
-      chart_twitter_followers_count: {},
-      chart_twitter_likes_count: {},
-      chart_retweets_count: {},
+      chart_followers_count: {},
+      chart_followers_relative: false,
+      chart_likes_count: {},
+      chart_likes_perPost: false,
+      chart_thrid: {},
+      chart_post_count: {},
+      chart_ranking: {},
       chart_candidate_hashtags: {},
       chart_candidate_topics: {},
       loading: false,
@@ -107,18 +177,25 @@ export default {
         { candidate_id: 12, name: "Ciro" },
         { candidate_id: 13, name: "Lula" },
         { candidate_id: 22, name: "Bolsonaro" },
+        { candidate_id: 15, name: "Tebet" },
+        { candidate_id: 30, name: "Felipe" }
       ],
       socialsModel: "Twitter",
       socials: [
         "Twitter",
         "Instagram"
-      ]
+      ],
+      dateMenuStart: false,
+      startDate: null,
+      dateMenuEnd: false,
+      endDate: null
     }
   },
   watch: {},
   beforeMount() {
     this.candidatesModel = this.candidates[0]
     this.resolveCharts();
+
   },
   mounted() {},
   computed: {},
@@ -127,38 +204,127 @@ export default {
       this.loading = true;
       if (this.candidatesModel.candidate_id === -1) {
         // chart geral
-        this.resolve_twitter_followers_count();
-        this.resolve_twitter_likes_count();
-        this.resolve_retweets_count();
+        this.resolve_followers_count();
+        this.resolve_likes_count();
+        this.resolve_thrid();
+        this.resolve_post_count();
+        this.resolve_ranking();
       } else {
         // chart específico
         this.resolve_candidate_hashtags();
         this.resolve_candidate_topics();
       }
 
-      setTimeout(() => {
+      this.$nextTick().then(() => {
         this.loading = false;
-      }, 0);
+      })  
     },
-    resolve_twitter_followers_count() {
-      this.chart_twitter_followers_count = this.prepareChartLine(this.dados.twitter_followers_count, "followers_count", "Ganho de seguidores Twitter")
+    resolve_followers_count() {
+      
+      let property = "followers_count";
+      if (this.chart_followers_relative) property = "followers_relative";
+      
+      axios.get(Vue.preUrl + `/report/followers_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_followers_count = this.prepareChartLine(res.data, property, "Ganho de seguidores")
+      })
+      .catch(error => {
+        debugger;
+        this.chart_followers_count = {}
+        console.log(error);
+      });
+      
     },
-    resolve_twitter_likes_count() {
-      this.chart_twitter_likes_count = this.prepareChartLine(this.dados.twitter_likes_count, "likes", "Número de likes Twitter")
+    resolve_likes_count() {
+      if (this.socialsModel === "Instagram") this.chart_likes_perPost = true;
+
+      let property = "likes_count";
+      if (this.chart_likes_perPost) property = "likes_by_post";
+
+      axios.get(Vue.preUrl + `/report/likes_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_likes_count = this.prepareChartLine(res.data, property, "Número de likes")
+      })
+      .catch(error => {
+        this.chart_likes_count = {}
+        console.log(error);
+      });
+
     },
-    resolve_retweets_count() {
-      this.chart_retweets_count = this.prepareChartLine(this.dados.retweets_count, "retweets", "Número de retweets")
+    resolve_thrid() {
+
+      let urlpos = `/report/retweets_count?start=2022-08-01&end=2022-08-22`;
+      let property = "retweets";
+      let title = "Número de retweets";
+      if (this.socialsModel === "Instagram") {
+        urlpos = `/report/insta_comments_count?start=2022-08-01&end=2022-08-22`;
+        property = "comments_by_post";
+        title = "Número de comentários";
+      }
+
+      axios.get(Vue.preUrl + urlpos)
+      .then(res => {
+        this.chart_thrid = this.prepareChartLine(res.data, property, title)
+      })
+      .catch(error => {
+        this.chart_thrid = {}
+        console.log(error);
+      });
+      
+    },
+    resolve_post_count() {
+
+      axios.get(Vue.preUrl + `/report/posts_count?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_post_count = this.prepareChartLine(res.data, "posts_count", "Número de posts")
+      })
+      .catch(error => {
+        this.chart_post_count = {}
+        console.log(error);
+      });
+
+    },
+    resolve_ranking() {
+
+      axios.get(Vue.preUrl + `/report/candidate_ranking?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_ranking = this.prepareRanking(res.data[0], "Ranking")
+      })
+      .catch(error => {
+        this.chart_ranking = {}
+        console.log(error);
+      });
+
     },
     resolve_candidate_hashtags() {
-      this.chart_candidate_hashtags = this.prepareChartCloud(this.dados.candidate_hashtags, "hashtags", "Hashtags usadas")
+
+      axios.get(Vue.preUrl + `/report/candidate_hashtags?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_candidate_hashtags = this.prepareChartCloud(res.data, "hashtags", "Hashtags usadas")
+      })
+      .catch(error => {
+        this.chart_candidate_hashtags = {}
+        console.log(error);
+      });
+
     },
     resolve_candidate_topics() {
-      this.chart_candidate_topics = this.prepareChartCloud(this.dados.candidate_topics, "topics", "Tópicos citados")
+
+      axios.get(Vue.preUrl + `/report/candidate_topics?media=${this.socialsModel.toLowerCase()}&start=2022-08-01&end=2022-08-22`)
+      .then(res => {
+        this.chart_candidate_topics = this.prepareChartCloud(res.data, "topics", "Tópicos citados")
+      })
+      .catch(error => {
+        this.chart_candidate_topics = {}
+        console.log(error);
+      });
+
     },
     prepareChartLine(arrDados, yItem, title) {
       let series = [];
       let vm = this;
       let xAxisArray = [];
+
       arrDados.map(x => {
         let alreadyItem = xAxisArray.find(y => y === Date.parse(x.date+"T00:00"));
         if (!alreadyItem) {
@@ -185,30 +351,29 @@ export default {
           inSeries.data = [];
         }
         inSeries.data.push({
-            name: "Total: " + x[yItem].toLocaleString("pt-br"),
             x: xAxisArray.findIndex(t => t === (new Date(Date.parse(x.date+"T00:00"))).toLocaleDateString("pt-br").substr(0,5) ),
-            y: x[yItem]
+            y: Number(x[yItem])
         })
       })
 
       series.sort((a, b) => a.name.localeCompare(b.name));
 
 
-      if (yItem === "followers_count") {
-        series.map(x => {
-            let start = 0;
-            x.data.sort((a, b) => a.y - b.y);
-            x.data.map((item, ix) => {
-              if (ix === 0) {
-                start = item.y;
-                item.y = 0;
-              } else {
-                item.y = item.y - start;
-              }
-            })
-        })
-        console.log("o", series);
-      }
+      // if (yItem === "followers_count") {
+      //   series.map(x => {
+      //       let start = 0;
+      //       x.data.sort((a, b) => a.y - b.y);
+      //       x.data.map((item, ix) => {
+      //         if (ix === 0) {
+      //           start = item.y;
+      //           item.y = 0;
+      //         } else {
+      //           item.y = item.y - start;
+      //         }
+      //       })
+      //   })
+      //   console.log("o", series);
+      // }
 
 
       return {
@@ -280,6 +445,51 @@ export default {
         },
         legend: {
           enabled: false
+        }
+      }
+    },
+    prepareRanking(arrDados, title) {
+      let series = [];
+      let vm = this;
+      let dataList = [];
+      let xAxisArray = [];
+      let categories = [];
+
+
+      Object.keys( arrDados ).forEach(function (topic) {
+        categories.push(topic);
+        Object.keys( arrDados[topic] ).forEach(function (cand) {
+          let alreadyItem = series.find(x => x.name === cand);
+          if (alreadyItem) {
+            alreadyItem.data.push(arrDados[topic][cand]);
+          } else {
+            series.push({
+              type: 'column',
+              name: cand,
+              data: [arrDados[topic][cand]]
+            })
+          }
+        })
+      });
+
+      series.sort((a, b) => a.name.localeCompare(b.name));
+
+      return {
+        series,
+        title: {
+          text: title
+        },
+        xAxis: {
+          type: "category",
+          categories: categories,
+        },
+        plotOptions: {
+          bar: {
+            colorByPoint: false
+          }
+        },
+        legend: {
+          enabled: true
         }
       }
     },
@@ -416,6 +626,23 @@ body {
 .Main_MidCharts {
   padding-bottom: 70px;
 }
+.Main_ChartContainer {
+  display: flex;
+  align-items: center;
+}
+.Main_SwitchBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 10px;
+}
+.Main_SwitchLabel {
+  font-size: 14px;
+  text-align: center;
+}
 
 
 
@@ -446,5 +673,19 @@ html::-webkit-scrollbar-corner {
 }
 .App_Layout .theme--dark.v-btn.focus-visible:before {
   opacity: 0.24;
+}
+.primary {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+}
+.primary--text {
+  color: #5cbbf6!important;
+  caret-color: #5cbbf6!important;
+}
+.Main_Layout .v-input--selection-controls {
+  margin-top: 0px;
+}
+.v-application--is-ltr .v-text-field .v-label {
+  right: unset !important;
 }
 </style>

@@ -4,7 +4,7 @@
       <div v-if="config.title" class="Highcharts_TitleEmpty">{{ config.title.text }}</div>
       Sem dados para exibir
     </div>
-    <div v-else :id="id" class="Highcharts_Div" />
+    <div :id="id" class="Highcharts_Div" />
   </div>
 </template>
 
@@ -43,7 +43,8 @@ export default {
       chart: null,
       chartSlidersDebounceFunction: null,
       returnedFunction: null,
-      noData: false
+      noData: false,
+      renderCount: 0
     }
   },
   watch: {
@@ -53,6 +54,9 @@ export default {
       setTimeout(() => {
         vm.handleResize();
       }, 0);
+    },
+    config() {
+      this.checkEmpty();
     }
   },
   beforeMount() {
@@ -68,17 +72,7 @@ export default {
     window.addEventListener('resize', this.returnedFunction);
   },
   mounted() {
-    let isEmpty = true;
-    if (this.config.series) {
-      this.config.series.map(x => {
-        if (x.data && x.data.length > 0) isEmpty = false;
-      })
-    }
-    if (!isEmpty) {
-      this.renderChart();
-    } else {
-      this.noData = true;
-    }
+    this.checkEmpty();
   },
   computed: {},
   methods: {
@@ -158,11 +152,15 @@ export default {
           },
           bar: {
             centerInCategory: true
-          }
+          },
+          // series: {
+          //   animation: this.renderCount === 0 ? true : false
+          // }
         },
         series: []
       };
       // end options
+      this.renderCount++;
 
       options = window._merge(options, this.config);
 
@@ -186,6 +184,24 @@ export default {
       }
 
       // end of renderChart()
+    },
+    checkEmpty() {
+      let isEmpty = true;
+      if (this.config.series) {
+        this.config.series.map(x => {
+          if (x.data && x.data.length > 0) isEmpty = false;
+        })
+      }
+      if (!isEmpty) {
+        this.noData = false;
+        this.$nextTick().then(() => {
+          // if (this.chart) this.handleResize();
+          // else this.renderChart();
+          this.renderChart();
+        })        
+      } else {
+        this.noData = true;
+      }
     },
     randomPlacement(point, options) {
       var field = options.field;
@@ -225,10 +241,14 @@ export default {
   justify-content: center;
   flex-direction: column;
   font-size: 30px;
+  flex-grow: 1;
 }
 .Highcharts_TitleEmpty {
   font-size: 20px;
   margin-bottom: 50px;
+}
+.Highcharts_Empty ~ .Highcharts_Div {
+  display: none;
 }
 
 
@@ -296,5 +316,8 @@ svg.highcharts-root .highcharts-tooltip tspan[style*="color:"] {
 }
 .highcharts-bar-series > rect {
   stroke: none !important;
+}
+.highcharts-point {
+  stroke-width: 0px !important;
 }
 </style>

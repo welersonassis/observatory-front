@@ -1,5 +1,5 @@
 <template>
-  <div class="App_Layout">
+  <div class="App_Layout v-application--is-ltr">
     <router-view></router-view>
     <div
       :class="{
@@ -67,38 +67,8 @@ export default {
     }
   },
   beforeMount() {
-    let vm = this;
-
-    axios.interceptors.request.use(
-      function(config) {
-        // Do something before request is sent
-        config.withCredentials = true;
-        return config;
-      },
-      function(error) {
-        // Do something with request error
-        return Promise.reject(error);
-      }
-    );
-
-    axios.interceptors.response.use(
-      function(response) {
-        return response;
-      },
-      function(error) {
-        if (401 === error?.response?.status) {
-          vm.$store.commit("DEFINE_SNACK", {
-            active: true,
-            error: true,
-            text: "You aren't logged in",
-            type: "error"
-          });
-          return Promise.reject(error);
-        } else {
-          return Promise.reject(error);
-        }
-      }
-    );
+    debugger;
+    this.$vuetify.theme.dark = true;
   },
   mounted() {
     let vm = this;
