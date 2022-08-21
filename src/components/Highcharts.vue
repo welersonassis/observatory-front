@@ -179,7 +179,8 @@ export default {
         this.chart = Highcharts.chart(this.id, options);
       } else {
         this.chart.update({
-          series: options.series
+          series: options.series,
+          xAxis: options.xAxis
         }, true, true, true);
       }
 
