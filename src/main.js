@@ -20,6 +20,7 @@ Vue.use(PortalVue);
 
 if (process.env.NODE_ENV === 'production') {
   window.isProduction = true;
+  Vue.preUrl = "http://34.148.127.238:8000";
 } else {
   window.isProduction = false;
   Vue.preUrl = "http://localhost:8000";
