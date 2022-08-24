@@ -6,6 +6,24 @@
       <div class="Main_Top"></div>
       <div class="Main_Mid">
         <div class="Main_MidBox">
+          <div class="Main_Header">
+            <span class="Main_Logo">Observatório das Eleições nas Redes Sociais</span>
+            <span class="Main_About">
+              <v-btn text icon
+                color="blue lighten-3"
+                @click="dialogProcModel = true;">
+                <v-icon>info</v-icon>
+              </v-btn>
+              <v-dialog
+                v-model="dialogProcModel"
+                max-width="500">
+                <div class="D_Dialog">
+                  <div class="Main_DialogTitle">Sobre</div>
+                  <div class="Main_DialogText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lobortis rhoncus sapien, eget ultricies sapien imperdiet at. Donec tortor nisi, tempor non sagittis quis, elementum non arcu. Aenean efficitur ornare libero ac tristique. Sed ac quam sed ex efficitur dapibus. In lectus enim, laoreet eget eros ultrices, molestie placerat lectus. Sed lacinia, dui quis sollicitudin porttitor, erat velit dignissim ante, eleifend viverra diam lacus sollicitudin libero. Donec facilisis vel nisl at maximus. Aenean id viverra augue, vel suscipit ipsum. Quisque eget risus in nulla semper faucibus. Pellentesque nisl diam, dignissim vitae lorem vitae, tempor pulvinar metus. Nunc consequat quam quis massa molestie, in malesuada velit auctor. Nulla dapibus dictum bibendum. Vestibulum venenatis dignissim felis nec facilisis. Sed metus dolor, efficitur et egestas eget, suscipit sit amet tortor.</div>
+                </div>
+              </v-dialog>
+            </span>
+          </div>
           <div class="Main_MidFilter">
             <div class="Main_ChipSelect Space_Bottom">
               <template v-for="(cand, ix) in candidates">
@@ -81,19 +99,6 @@
           <div v-else-if="candidatesModel.candidate_id === -1" class="Main_MidCharts">
             <div class="Main_ChartContainer">
               <Highcharts
-                :config="chart_followers_count"
-                :counter="counter" />
-              <div class="Main_SwitchBox">
-                <div class="Main_SwitchLabel">Percentual</div>
-                <v-switch
-                  v-model="chart_followers_relative"
-                  single-line
-                  hide-details
-                  @change="resolve_followers_count()" />
-              </div>
-            </div>
-            <div class="Main_ChartContainer">
-              <Highcharts
                 :config="chart_likes_count"
                 :counter="counter" />
               <div class="Main_SwitchBox">
@@ -104,6 +109,19 @@
                   single-line
                   hide-details
                   @change="resolve_likes_count()" />
+              </div>
+            </div>
+            <div class="Main_ChartContainer">
+              <Highcharts
+                :config="chart_followers_count"
+                :counter="counter" />
+              <div class="Main_SwitchBox">
+                <div class="Main_SwitchLabel">Percentual</div>
+                <v-switch
+                  v-model="chart_followers_relative"
+                  single-line
+                  hide-details
+                  @change="resolve_followers_count()" />
               </div>
             </div>
             <div class="Main_ChartContainer">
@@ -182,15 +200,16 @@ export default {
         { candidate_id: 15, name: "Tebet" },
         { candidate_id: 30, name: "Felipe" }
       ],
-      socialsModel: "Twitter",
+      socialsModel: "Instagram",
       socials: [
-        "Twitter",
-        "Instagram"
+        "Instagram",
+        "Twitter"
       ],
       dateMenuStart: false,
       startDate: null,
       dateMenuEnd: false,
-      endDate: null
+      endDate: null,
+      dialogProcModel: false
     }
   },
   watch: {},
@@ -532,7 +551,7 @@ body {
   --d-back: #333;
   --d-text: #ccc;
 
-  --top-height: 40px;
+  --top-height: 0px;
   --left-width: 270px;
   --right-width: 300px;
   --mid-max-width: 1200px;
@@ -650,6 +669,27 @@ body {
   margin: 0 auto;
   gap: 30px;
   align-items: center;
+}
+.D_Dialog {
+  background-color: #383838;
+  padding: 20px;
+}
+.Main_Header {
+  display: block;
+  text-align: center;
+  line-height: 1.0;
+  padding: 10px;
+  margin: 30px 0;
+  color: #67bcff;
+  font-size: 24px;
+  font-weight: bold;
+}
+.Main_DialogTitle {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+.Main_DialogText {
+
 }
 
 

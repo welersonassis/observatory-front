@@ -127,6 +127,7 @@ export default {
           }
         },
         yAxis: {
+          allowDecimals: false,
           title: {
             enabled: false
           },

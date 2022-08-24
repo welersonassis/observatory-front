@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
   Vue.preUrl = "http://34.148.127.238:8000";
 } else {
   window.isProduction = false;
-  Vue.preUrl = "http://localhost:8000";
+  Vue.preUrl = "http://34.148.127.238:8000";
 }
 
 new Vue({
