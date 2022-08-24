@@ -18,8 +18,15 @@
                 v-model="dialogProcModel"
                 max-width="500">
                 <div class="D_Dialog">
-                  <div class="Main_DialogTitle">Sobre</div>
-                  <div class="Main_DialogText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lobortis rhoncus sapien, eget ultricies sapien imperdiet at. Donec tortor nisi, tempor non sagittis quis, elementum non arcu. Aenean efficitur ornare libero ac tristique. Sed ac quam sed ex efficitur dapibus. In lectus enim, laoreet eget eros ultrices, molestie placerat lectus. Sed lacinia, dui quis sollicitudin porttitor, erat velit dignissim ante, eleifend viverra diam lacus sollicitudin libero. Donec facilisis vel nisl at maximus. Aenean id viverra augue, vel suscipit ipsum. Quisque eget risus in nulla semper faucibus. Pellentesque nisl diam, dignissim vitae lorem vitae, tempor pulvinar metus. Nunc consequat quam quis massa molestie, in malesuada velit auctor. Nulla dapibus dictum bibendum. Vestibulum venenatis dignissim felis nec facilisis. Sed metus dolor, efficitur et egestas eget, suscipit sit amet tortor.</div>
+                  <div class="Main_DialogTitle">Observatório das eleições nas redes sociais</div>
+                  <div class="Main_DialogText">
+                    <div>O Observatório das Eleições nas Redes Sociais é uma iniciativa de desenvolvimento tecnológico de pesquisadores da Universidade Federal de Goiás. Os dados são provenientes das mídias sociais dos candidatos à presidência do Brasil. Um código de programação coleta e organiza dados de ganho de seguidores, número de curtidas, compartilhamentos, número de postagens e principais hashtags e tópicos citados pelos candidatos. O "Observatório" trata, organiza e apresenta esses dados ao longo do tempo para que a população acompanhe sua evolução. Não é possível garantir que os dados não tenham oscilações em função da fonte e/ou modo de coleta, o que pode implicar em observações que não sejam exatamente fidedignas com o que esteja ocorrendo nas mídias sociais dos candidatos.</div>
+                    <br>
+                    <div class="Main_DialogTextSub">Equipe responsável</div>
+                    <div><span class="Main_DialogBold">Welerson Assis</span> - Estudante da Universidade Federal de Goiás</div>
+                    <div><span class="Main_DialogBold">Celso Gonçalves Camilo Júnior</span> - Professor e Pesquisador da Universidade Federal de Goiás</div>
+                    <div><span class="Main_DialogBold">Marcos Inácio Severo de Almeida</span> - Professor e Pesquisador da Universidade Federal de Goiás</div>
+                  </div>
                 </div>
               </v-dialog>
             </span>
@@ -401,6 +408,9 @@ export default {
         title: {
           text: title
         },
+        yAxis: {
+          allowDecimals: true
+        },
         xAxis: {
           type: "category",
           categories: xAxisArray
@@ -687,9 +697,20 @@ body {
 .Main_DialogTitle {
   font-size: 1.5em;
   margin-bottom: 20px;
+  line-height: 1.2em;
 }
 .Main_DialogText {
 
+}
+.Main_DialogTextSub {
+  color: white;
+  opacity: 0.3;
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+.Main_DialogBold {
+  /* font-weight: bold; */
+  color: #8ec5f1;
 }
 
 
