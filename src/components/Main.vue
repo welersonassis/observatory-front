@@ -20,12 +20,7 @@
                 <div class="D_Dialog">
                   <div class="Main_DialogTitle">Observatório das eleições nas redes sociais</div>
                   <div class="Main_DialogText">
-                    <div>O Observatório das Eleições nas Redes Sociais é uma iniciativa de desenvolvimento tecnológico de pesquisadores da Universidade Federal de Goiás. Os dados são provenientes das mídias sociais dos candidatos à presidência do Brasil. Um código de programação coleta e organiza dados de ganho de seguidores, número de curtidas, compartilhamentos, número de postagens e principais hashtags e tópicos citados pelos candidatos. O "Observatório" trata, organiza e apresenta esses dados ao longo do tempo para que a população acompanhe sua evolução. Não é possível garantir que os dados não tenham oscilações em função da fonte e/ou modo de coleta, o que pode implicar em observações que não sejam exatamente fidedignas com o que esteja ocorrendo nas mídias sociais dos candidatos.</div>
-                    <br>
-                    <div class="Main_DialogTextSub">Equipe responsável</div>
-                    <div><span class="Main_DialogBold">Welerson Assis</span> - Estudante da Universidade Federal de Goiás</div>
-                    <div><span class="Main_DialogBold">Celso Gonçalves Camilo Júnior</span> - Professor e Pesquisador da Universidade Federal de Goiás</div>
-                    <div><span class="Main_DialogBold">Marcos Inácio Severo de Almeida</span> - Professor e Pesquisador da Universidade Federal de Goiás</div>
+                    <div>O Observatório das Eleições nas Redes Sociais é uma iniciativa de desenvolvimento tecnológico de pesquisadores da Universidade Federal de Goiás. Os dados são provenientes das mídias sociais de alguns candidatos durante o período eleitoral de 2022. Um algoritmo coleta e organiza dados de seguidores, número de curtidas, compartilhamentos, número de postagens e principais hashtags e tópicos citados nos perfis dos candidatos. O "Observatório" apresenta esses dados ao longo do tempo para que os interessados acompanhem sua evolução. Não é possível garantir que os dados não tenham oscilações em função da fonte e/ou modo de coleta, o que pode implicar em observações que não sejam exatamente fidedignas com o que esteja ocorrendo nas mídias sociais dos candidatos.</div>
                   </div>
                 </div>
               </v-dialog>
