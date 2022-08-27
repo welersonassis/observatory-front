@@ -310,7 +310,7 @@ export default {
 
       axios.get(Vue.preUrl + `/report/candidate_ranking?media=${this.socialsModel.toLowerCase()}&start=${this.startDate}&end=${this.endDate}`)
       .then(res => {
-        this.chart_ranking = this.prepareRanking(res.data[0], "Ranking")
+        this.chart_ranking = this.prepareRanking(res.data[0], "Ranking de palavras por tópico")
       })
       .catch(error => {
         this.chart_ranking = {}
